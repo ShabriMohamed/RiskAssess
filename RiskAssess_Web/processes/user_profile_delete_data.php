@@ -44,8 +44,7 @@ try {
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
     
-    // In a real application, you might want to anonymize the data instead of deleting it
-    // For this example, we'll just mark the account for deletion
+    
     
     // Mark account for deletion
     $stmt = $conn->prepare("UPDATE users SET status = 'deleted', email = CONCAT('deleted_', id, '@example.com'), name = 'Deleted User' WHERE id = ?");

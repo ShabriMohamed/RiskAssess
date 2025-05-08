@@ -10,8 +10,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
 
 $user_id = $_SESSION['user_id'];
 
-// Require the 2FA library (you'll need to install this via composer)
-// composer require robthree/twofactorauth
+
 require_once '../vendor/autoload.php';
 
 try {

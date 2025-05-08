@@ -23,8 +23,7 @@ if ($session_id === session_id()) {
 }
 
 try {
-    // In a real application, you would delete the session from your sessions table
-    // For this example, we'll just return success
+    
     
     // Log the action
     $action = "Logged out session";

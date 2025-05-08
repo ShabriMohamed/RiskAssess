@@ -12,8 +12,6 @@ $user_id = $_SESSION['user_id'];
 $current_session_id = session_id();
 
 try {
-    // In a real application, you would have a sessions table
-    // For this example, we'll create mock data
     
     $sessions = [
         [

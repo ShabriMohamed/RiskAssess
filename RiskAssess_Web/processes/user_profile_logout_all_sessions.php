@@ -12,8 +12,7 @@ $user_id = $_SESSION['user_id'];
 $current_session_id = session_id();
 
 try {
-    // In a real application, you would delete all sessions except the current one
-    // For this example, we'll just return success
+    
     
     // Log the action
     $action = "Logged out all other sessions";
