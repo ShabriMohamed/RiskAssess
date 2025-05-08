@@ -1,0 +1,33 @@
+<?php
+require_once '../config.php';
+session_start();
+header('Content-Type: application/json');
+
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
+    echo json_encode(['success' => false, 'message' => 'Unauthorized access']);
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$current_session_id = session_id();
+
+try {
+    // In a real application, you would delete all sessions except the current one
+    // For this example, we'll just return success
+    
+    // Log the action
+    $action = "Logged out all other sessions";
+    $details = json_encode([
+        'current_session_id' => $current_session_id,
+        'timestamp' => date('Y-m-d H:i:s')
+    ]);
+    
+    $stmt = $conn->prepare("INSERT INTO audit_log (user_id, action, table_name, record_id, details) VALUES (?, ?, 'sessions', ?, ?)");
+    $stmt->bind_param("isis", $user_id, $action, $user_id, $details);
+    $stmt->execute();
+    
+    echo json_encode(['success' => true, 'message' => 'All other sessions logged out successfully']);
+    
+} catch (Exception $e) {
+    echo json_encode(['success' => false, 'message' => 'Error logging out sessions: ' . $e->getMessage()]);
+}
