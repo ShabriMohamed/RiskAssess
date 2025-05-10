@@ -43,8 +43,7 @@ def predict():
 
         return jsonify({
             'risk_stage': risk_stage,
-            'likelihood': addiction_likelihood,
-            'stage_from_likelihood': stage_from_likelihood
+            
         })
 
     except Exception as e:

@@ -136,6 +136,7 @@ $user_name = $_SESSION['name'] ?? 'User';
         <a href="#" class="nav-link" data-page="book_appointment.php"><i class="fa-solid fa-plus-circle"></i> Book Appointment</a>
         <a href="#" class="nav-link" data-page="messages.php"><i class="fa-solid fa-envelope"></i> Messages</a>
         <a href="#" class="nav-link" data-page="resources.php"><i class="fa-solid fa-book-open"></i> Resources</a>
+        <a href="#" class="nav-link" data-page="RiskAssess.php"><i class="fa-solid fa-medkit"></i> Predict Drug Addiction Likelihood</a>
         <button class="logout" onclick="window.location.href='logout.php'"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
     </nav>
     <!-- Main Content -->
@@ -177,6 +178,5 @@ $(document).ready(function() {
     $('#dashboardDynamicContent').load('user_overview.php');
 });
 </script>
-<?php include 'includes/chat_widget.php'; ?>
 </body>
 </html>

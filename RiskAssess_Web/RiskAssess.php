@@ -1,4 +1,12 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'customer') {
+    header("Location: login.php");
+    exit;
+}
+require_once 'config.php';
 // Map question IDs to exact feature names from your CSV/model
 // Ensure all question IDs map to exactly what the model expects
 $questionIdToFeatureName = [
@@ -385,6 +393,8 @@ document.querySelectorAll('.prev-step').forEach(btn => {
     });
 });
 
+// At the end of the RiskAssessmentForm submit event handler, replace the result display with:
+
 document.getElementById('riskAssessmentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
     // Show modal
@@ -430,33 +440,52 @@ document.getElementById('riskAssessmentForm').addEventListener('submit', async f
         });
         if (!res.ok) throw new Error(await res.text());
         const result = await res.json();
-        let risk = (result.risk_stage||'').toLowerCase();
-        let icon = risk === 'high' ? 'exclamation-triangle-fill' : risk === 'moderate' ? 'exclamation-circle-fill' : 'check-circle-fill';
-        let rec = risk === 'high'
-          ? `<div class="recommendation-card"><i class="bi bi-hospital"></i><b>Recommendation:</b> Seek professional help or counseling immediately.</div>`
-          : risk === 'moderate'
-          ? `<div class="recommendation-card"><i class="bi bi-person-raised-hand"></i><b>Recommendation:</b> Monitor your patterns and consider preventive measures.</div>`
-          : `<div class="recommendation-card"><i class="bi bi-emoji-smile"></i><b>Recommendation:</b> Continue healthy habits and stay aware.</div>`;
+        
+        console.log("API Result:", result); // Debug log
+        
+        // Save assessment data to database
+        const saveRes = await fetch('processes/save_assessment.php', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({
+                risk_level: result.risk_stage,
+                questionnaire_data: data
+            })
+        });
+
+        
+        const saveResult = await saveRes.json();
+        console.log("Save Result:", saveResult); // Debug log
+        
+        if (!saveRes.ok) throw new Error(saveResult.message || 'Failed to save assessment');
+        
+        // Show thank you message instead of results
         document.getElementById('results-container').innerHTML = `
-            <div class="result-card result-${risk} fade-in">
-                <i class="bi bi-${icon} result-icon"></i>
-                <h3 class="mb-2">Assessment Result</h3>
-                <h2 class="mb-2" style="font-weight:700;">${result.risk_stage || 'Unknown'} Risk</h2>
-                <p>Your responses suggest a <b>${result.risk_stage || 'Unknown'}</b> level of risk factors.</p>
+            <div class="text-center py-4">
+                <div class="mb-4">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                </div>
+                <h3 class="mb-3">Thank You for Completing the Assessment</h3>
+                <p class="mb-4">Your responses have been submitted successfully. A counsellor will review your assessment and may contact you to discuss the results.</p>
+                <a href="UserDashboard.php" class="btn btn-primary">Return to Home</a>
             </div>
-            ${rec}
         `;
     } catch (error) {
+        console.error("Error:", error); // Debug log
         document.getElementById('results-container').innerHTML = `
-            <div class="result-card result-high fade-in">
-                <i class="bi bi-x-circle-fill result-icon"></i>
-                <h3>Error</h3>
-                <h2>Could Not Process Assessment</h2>
-                <p>${error.message}</p>
+            <div class="text-center py-4">
+                <div class="mb-4">
+                    <i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>
+                </div>
+                <h3 class="mb-3">Something Went Wrong</h3>
+                <p class="mb-4">We couldn't process your assessment. Please try again later or contact support.</p>
+                <p class="text-danger">${error.message}</p>
+                <a href="UserDashboard.php" class="btn btn-primary">Return to Home</a>
             </div>
         `;
     }
 });
+
 </script>
 </body>
 </html>

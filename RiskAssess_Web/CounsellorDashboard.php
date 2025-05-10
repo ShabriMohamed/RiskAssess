@@ -14,6 +14,9 @@ $counsellor_name = $_SESSION['name'] ?? 'Counsellor';
     <meta charset="UTF-8">
     <title>Counsellor Dashboard - RiskAssess</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Add this before your jQuery and Bootstrap scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- Bootstrap 5.2 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome 6 CDN -->
@@ -136,6 +139,7 @@ $counsellor_name = $_SESSION['name'] ?? 'Counsellor';
         <a href="#" class="nav-link" data-page="counsellor_messages.php"><i class="fa-solid fa-envelope"></i> Messages</a>
         <a href="#" class="nav-link" data-page="counsellor_availability.php"><i class="fa-solid fa-clock"></i> My Availability</a>
         <a href="#" class="nav-link" data-page="counsellor_profile.php"><i class="fa-solid fa-user"></i> Profile</a>
+        <a href="#" class="nav-link" data-page="counsellor_assess.php"><i class="fa-solid fa-user"></i> Predicton Result Reports</a>
         <button class="logout" onclick="window.location.href='logout.php'"><i class="fa-solid fa-sign-out-alt"></i> Logout</button>
     </nav>
     <!-- Main Content -->
@@ -157,6 +161,9 @@ $counsellor_name = $_SESSION['name'] ?? 'Counsellor';
 <!-- Bootstrap 5.2 JS and jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Add this before your jQuery and Bootstrap scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
 $(document).ready(function() {
     // Sidebar navigation click handler
@@ -176,6 +183,20 @@ $(document).ready(function() {
     // Load default overview
     $('#dashboardDynamicContent').load('counsellor_overview.php');
 });
+
+
+function loadPage(page) {
+    $('#dashboardDynamicContent').fadeOut(120, function() {
+        $('#dashboardDynamicContent').load(page, function() {
+            $(this).fadeIn(120);
+            
+            // Update active nav link
+            $('.sidebar .nav-link').removeClass('active');
+            $('.sidebar .nav-link[data-page="' + page + '"]').addClass('active');
+        });
+    });
+}
+
 </script>
 </body>
 </html>
